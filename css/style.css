@@ -1,0 +1,77 @@
+
+*{
+    margin:0;
+    padding-top: 0;
+    box-sizing: border-box;
+}
+
+body{
+    background-color: #24353f;
+}
+.loginContainer{
+    box-shadow: -5px 2px 54px -9px rgb(0 0 0);
+}
+
+.loginContainer h2{
+    color:#17a2b8;
+    font-size: 40px;
+}
+.inputError{
+    color:red;
+    margin-bottom: 10px !important;
+    display: none;
+}
+
+.loginContainer input , 
+.loginContainer input:focus ,
+.loginContainer input:visited {
+    background-color: transparent !important;
+    color:#ced4da !important;
+    border: 1px solid #17a2b8 !important;
+    box-shadow:none;
+}
+
+.loginContainer input{
+    border: 1px solid #ced4da !important;
+}
+.loginContainer input::backdrop {
+    background-color: transparent;
+}
+.loginContainer input::placeholder{
+    color:#ddd !important;
+}
+.loginContainer button{
+    color:#17a2b8;
+    border-color:#17a2b8;
+    background-color: transparent;
+    margin-top: 2.5rem !important;
+}
+.loginContainer button:hover {
+    color: #fff;
+    background-color: #17a2b8;
+    border-color: #17a2b8;
+}
+.loginContainer button:focus {
+    
+    background-color: #17a2b8;
+    border-color: #17a2b8;
+}
+.haventAccount , 
+.loginContainer a{
+    color:#fff;
+}
+nav{
+    
+    top: 0;
+    left: 0;
+    right: 0;
+}
+nav a{
+    color:#fff !important;
+}
+.nav-item a{
+    color:rgba(255,255,255,.5) !important; 
+}
+.nav-item a:hover{
+    color:#fff !important;
+}
