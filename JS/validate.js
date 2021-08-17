@@ -1,67 +1,77 @@
-let login = document.getElementById("login");
-let signup = document.getElementById("signup");
-let userName = document.getElementById("name");
-let email = document.getElementById("email");
-let password = document.getElementById("password");
-let inputLoginError = document.getElementById("inputLoginError");
-let inputRegisterError = document.getElementById("inputRegisterError");
-let navItem = document.getElementById("nav-item");
+let login = document.getElementById("login"); // login submit button
+let signup = document.getElementById("signup"); // signup submit button
+let userName = document.getElementById("name"); // userName Input
+let email = document.getElementById("email");   // email Input 
+let password = document.getElementById("password"); // password Input
+let inputLoginError = document.getElementById("inputLoginError"); // Login container Errors
+let inputRegisterError = document.getElementById("inputRegisterError"); // Register Container Errors
+let navItem = document.getElementById("nav-item"); 
+let LocaleStorageUsers; // locale Storage Array
 
-let LocaleStorageUsers;
 
-
-if(localStorage.getItem("Users")){
-    LocaleStorageUsers  = JSON.parse (localStorage.getItem("Users"));
+if(localStorage.getItem("Users")){ // check if there are Users Item in LocalStorage
+    LocaleStorageUsers  = JSON.parse (localStorage.getItem("Users")); // to convert it array of objects
 }else{
     LocaleStorageUsers = [];
 }
 
 
 
-if(login!=null){
+if(login!=null){ // if the user in the login page
     login.addEventListener("click" , function(){
-        validateLogin();
-        console.log(email.value);
-        console.log(password.value);
+        validateLogin(); // function to validate login Inputs
     });
 }
 
-
-
-function addUser(){
+function addUser(){ // function to add user object into localStorage
     let user = {
         name : userName.value,
         email : email.value,
         password : password.value, 
     };
     LocaleStorageUsers.push(user);
-
-    localStorage.setItem("Users" , JSON.stringify(LocaleStorageUsers));
+    localStorage.setItem("Users" , JSON.stringify(LocaleStorageUsers)); // to convert array of Objects into string
+    window.location.href = "signin.html"; //
 }
 
+function validateInputs(){ // validate Register Inputs
+    let name = false , mail = false , pass = false;
+    let errors = ``;
+    let emailRegex = /^[a-zA-z0-9]{1,18}\@(gmail|yahoo|info|twitter)\.(com|org)$/i;
+    let nameRegex  = /^[a-zA-Z0-9]{4,15}$/i;
 
-
-function validateInputs(){
-    let emailRegex = /^[a-zA-z0-9]{4,18}\@(gmail|yahoo|info|twitter)\.(com|org)$/i;
-    let nameRegex  = /^[a-zA-Z0-9]{4,15}$/;
-    if(emailRegex.test(email.value) && password.value.trim().length > 6 &&nameRegex.test(userName.value) ){
+    if(nameRegex.test(userName.value)){
+        name = true;
+    }else{
+        errors +=`Invalid Name > 4 letters or digits Only`+'<br/>';
+    }
+    if(emailRegex.test(email.value)){
+        mail = true; 
+    }else{
+        errors+=`Invalid Mail `+'<br/>';
+    }
+    if(password.value.trim().length > 6 ){
+        pass = true;
+    }else{
+        errors+= `pass Must > than 6 chars`+'<br/>';
+    }
+    
+    if(mail && pass  && name ){
         inputRegisterError.style.display = "none";
         if(!checkingExisting(email.value , password.value)){
-            console.log("There Must inset user Into Data Base");
             addUser();
         }else{
             inputRegisterError.innerHTML = "This Mail is Already exist";
             inputRegisterError.style.display = "block";
-            console.log("email already exists");
         }
     }else{
+        inputRegisterError.innerHTML = errors;
         inputRegisterError.style.display = "block";
     }
 }
 
 
-
-if(signup!=null){
+if(signup!=null){ // if the user in the signup page
     signup.addEventListener("click" , function(){
         validateInputs();
     });
@@ -69,7 +79,6 @@ if(signup!=null){
 
 
 function checkingExisting(email){
-    console.log(LocaleStorageUsers.length);
     if(LocaleStorageUsers.length==0) return false;
     else {
         for(let i=0;i<LocaleStorageUsers.length;i++){
@@ -82,32 +91,45 @@ function checkingExisting(email){
 }
 
 function validateLogin(){
-    console.log("Inside The DFunction");
-    if(email.value.trim().length == 0 || password.value.trim().length == 0){
-        inputLoginError.style.display = "block";
-        console.log("Inside The condition");
+    let mail = false , pass = false , errors=``;
+    let emailRegex = /^[a-zA-z0-9]{1,18}\@(gmail|yahoo|info|twitter)\.(com|org)$/i;
+    if(emailRegex.test(email.value)){
+        mail = true;
     }else{
-        let i;
+        errors += `InValid Mail`+`<br/>`;
+    }
+    if(password.value.trim().length == 0){
+        errors += `InValid Password` + `<br/>`;
+    }else{
+        pass = true;
+    }
+    if(!mail || !pass){
+        inputLoginError.innerHTML = errors;
+        inputLoginError.style.display = "block";
+    }
+    else{
+        let i; errors = ``;
         if((i = checkingExisting(email.value))!=false){
-            console.log("This Mail IS exting");
-            console.log("I: " + i);
             if(LocaleStorageUsers[i-1].password==password.value){
-                console.log("good You are Allowed To enter to Home Page");
                 sessionStorage.setItem("userEmail" , email.value);
                 sessionStorage.setItem("userId" , i-1);
                 sessionStorage.setItem("userName" , LocaleStorageUsers[i-1].name);
-               
                 window.location.href = "../index.html";
-                
+            }else{
+                errors += `this Password not matching This Mail`;
+                inputLoginError.innerHTML = errors;
+                inputLoginError.style.display = "block";
             }
         }else{
-            console.log("This Mail Dosent Exist");
+            errors+=`This User dosent Regitser in Our System`;
+            inputLoginError.innerHTML = errors;
+            inputLoginError.style.display = "block";
         }
     }
 }
 
 
-function logOut(){
+function logOut(){ //logout function (Removing session)
     sessionStorage.removeItem("userEmail");
     sessionStorage.removeItem("userId");
     sessionStorage.removeItem("userName");
@@ -115,7 +137,8 @@ function logOut(){
 }
 
 
-if(navItem!=null){
+
+if(navItem!=null){ // check if the user in the home page
     navItem.addEventListener("click" , function(){
         logOut();
     });
